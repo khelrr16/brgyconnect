@@ -48,7 +48,6 @@ new class extends Component
     public string $employment_status = '';
     public string $religion = '';
     public string $occupation = '';
-    public ?string $monthly_income = null;
 
     // =========================
     // EMERGENCY CONTACT
@@ -86,9 +85,6 @@ new class extends Component
         $this->employment_status = $this->resident->employment_status ?? '';
         $this->religion = $this->resident->religion ?? '';
         $this->occupation = $this->resident->occupation ?? '';
-        $this->monthly_income = $this->resident->monthly_income !== null
-            ? (string) $this->resident->monthly_income
-            : null;
         $this->emergency_contact_name = $this->resident->emergency_contact_name ?? '';
         $this->emergency_contact_number = $this->resident->emergency_contact_number ?? '';
     }
@@ -119,7 +115,7 @@ new class extends Component
 
             'civil_status' => [
                 'required',
-                'in:Single,Married,Widow/Widower,Legally Separated'
+                'in:Single,Married,Widow/Widower,Divorced,Legally Separated'
             ],
 
             'citizenship' => [
@@ -206,12 +202,6 @@ new class extends Component
                 'max:255'
             ],
 
-            'monthly_income' => [
-                'nullable',
-                'numeric',
-                'min:0'
-            ],
-
             'emergency_contact_name' => [
                 'nullable',
                 'string',
@@ -252,13 +242,11 @@ new class extends Component
         $numericFields = [
             'contact_number',
             'residence_since',
-            'monthly_income',
             'emergency_contact_number',
         ];
 
         $nullableNumericFields = [
             'contact_number',
-            'monthly_income',
             'emergency_contact_number',
         ];
 
@@ -304,7 +292,6 @@ new class extends Component
             'occupation',
             'contact_number',
             'residence_since',
-            'monthly_income',
             'emergency_contact_name',
             'emergency_contact_number',
         ] as $property) {
@@ -376,7 +363,6 @@ new class extends Component
                 'employment_status',
                 'religion',
                 'occupation',
-                'monthly_income',
             ],
 
             4 => [
@@ -677,6 +663,9 @@ new class extends Component
                         <option value="Married">Married</option>
                         <option value="Widow/Widower">
                             Widow/Widower
+                        </option>
+                        <option value="Divorced">
+                            Divorced
                         </option>
                         <option value="Legally Separated">
                             Legally Separated
@@ -1143,31 +1132,6 @@ new class extends Component
                             {{ $message }}
                         </p>
                     @enderror
-                </div>
-
-
-                <div>
-                    <label>Monthly Income</label>
-
-                    <div class="flex">
-
-                        <span class="px-3 py-2 bg-gray-100 border border-r-0 rounded-l-lg">
-                            ₱
-                        </span>
-
-                        <input
-                            type="number"
-                            step="0.01"
-                            wire:model="monthly_income"
-                            class="w-full rounded-r-lg border-gray-300">
-
-                        @error('monthly_income')
-                            <p class="text-red-500 text-sm">
-                                {{ $message }}
-                            </p>
-                        @enderror
-                    </div>
-
                 </div>
 
             </div>

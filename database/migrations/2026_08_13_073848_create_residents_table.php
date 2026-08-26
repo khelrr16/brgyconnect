@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('extension_name')->nullable();
 
             $table->date('birth_date');
-            $table->enum('sex', ['Male', 'Female', 'Other']);
+            $table->enum('sex', ['Male', 'Female']);
             $table->string('civil_status');
             $table->string('citizenship');
             $table->string('place_of_birth');
@@ -44,7 +44,6 @@ return new class extends Migration
             $table->string('employment_status');
             $table->string('religion')->nullable();
             $table->string('occupation')->nullable();
-            $table->decimal('monthly_income', 12, 2)->nullable();
 
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_number')->nullable();

@@ -82,6 +82,16 @@
                     <span>Dashboard</span>
                 </x-admin-nav-link>
 
+                {{-- User Accounts --}}
+                @role('admin')
+                    <x-admin-nav-link
+                        :href="route('admin.users.index')"
+                        :active="request()->routeIs('admin.users.*')"
+                    >
+                        <i class="fa-solid fa-users w-5 text-center"></i>
+                        <span>User Accounts</span>
+                    </x-admin-nav-link>
+                @endrole
 
                 {{-- Residents --}}
                 <x-admin-nav-link
@@ -91,7 +101,6 @@
                     <i class="fa-solid fa-users w-5 text-center"></i>
                     <span>Residents</span>
                 </x-admin-nav-link>
-
 
                 {{-- Blotter --}}
                 <x-admin-nav-link

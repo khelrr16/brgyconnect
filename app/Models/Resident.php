@@ -37,14 +37,12 @@ class Resident extends Model
         'employment_status',
         'religion',
         'occupation',
-        'monthly_income',
         'emergency_contact_name',
         'emergency_contact_number',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
-        'monthly_income' => 'decimal:2',
     ];
 
     protected function address(): Attribute

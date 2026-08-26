@@ -25,7 +25,7 @@ class ResidentFactory extends Factory
             'extension_name' => $this->faker->optional(0.15)->randomElement(['Jr.', 'Sr.', 'II', 'III']), 
             'sex' => $this->faker->randomElement(['Male', 'Female', 'Other']),
             'birth_date' => $this->faker->date(),
-            'civil_status' => $this->faker->randomElement(['Single', 'Married', 'Widowed', 'Divorced']),
+            'civil_status' => $this->faker->randomElement(['Single', 'Married', 'Widow/Widower', 'Divorced', 'Legally Separated']),
             'citizenship' => $this->faker->country(),
             'place_of_birth' => $this->faker->city(),
             'contact_number' => $this->faker->phoneNumber(),
@@ -44,7 +44,6 @@ class ResidentFactory extends Factory
             'employment_status' => $this->faker->randomElement(['Employed', 'Self-Employed', 'Unemployed', 'Student', 'Retired', 'Other']),
             'religion' => $this->faker->randomElement(['Roman Catholic', 'Christianity', 'Islam', 'Hinduism', 'Buddhism', 'Judaism', 'Other']),
             'occupation' => $this->faker->jobTitle(),
-            'monthly_income' => $this->faker->randomFloat(2, 0, 100000),
 
             'emergency_contact_name' => $this->faker->name(),
             'emergency_contact_number' => $this->faker->phoneNumber(),

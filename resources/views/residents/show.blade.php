@@ -121,7 +121,6 @@
                             <div><p class="text-sm text-gray-500">Employment Status</p><p class="font-medium">{{ $display($resident->employment_status) }}</p></div>
                             <div><p class="text-sm text-gray-500">Religion</p><p class="font-medium">{{ $display($resident->religion) }}</p></div>
                             <div><p class="text-sm text-gray-500">Occupation</p><p class="font-medium">{{ $display($resident->occupation) }}</p></div>
-                            <div><p class="text-sm text-gray-500">Monthly Income</p><p class="font-medium">{{ $resident->monthly_income !== null ? number_format((float) $resident->monthly_income, 2) : 'N/A' }}</p></div>
                         </div>
                     </section>
 

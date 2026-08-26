@@ -6,6 +6,8 @@ use App\Models\Resident;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,7 +18,46 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $permissions = [
+            'manage-users',
+            'view-blotter-records',
+            'create-blotter-records',
+            'edit-blotter-records',
+            'delete-blotter-records',
+            'manage-blotter-records',
+            'schedule-hearings',
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'web',
+            ]);
+        }
+
+        $superAdminRole = Role::firstOrCreate([
+            'name' => 'super-admin',
+            'guard_name' => 'web',
+        ]);
+
+        $blotterOfficerRole = Role::firstOrCreate([
+            'name' => 'blotter-officer',
+            'guard_name' => 'web',
+        ]);
+
+        $memberRole = Role::firstOrCreate([
+            'name' => 'member',
+            'guard_name' => 'web',
+        ]);
+
+        $superAdminRole->syncPermissions($permissions);
+        $blotterOfficerRole->syncPermissions([
+            'view-blotter-records',
+            'create-blotter-records',
+            'edit-blotter-records',
+            'schedule-hearings',
+        ]);
+        $memberRole->syncPermissions([]);
 
         Resident::factory(50)
         ->sequence(fn ($sequence) => [
@@ -33,6 +74,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('admin123'),
-        ]);
+        ])->assignRole($superAdminRole);
+
+        User::factory()->create([
+            'name' => 'Blotter Officer',
+            'email' => 'blotter@gmail.com',
+            'password' => bcrypt('blotter123'),
+        ])->assignRole($blotterOfficerRole);
     }
 }
