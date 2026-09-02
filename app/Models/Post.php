@@ -10,6 +10,7 @@ class Post extends Model
     protected $fillable = [
         'created_by',
         'type',
+        'category',
         'title',
         'slug',
         'excerpt',
@@ -18,6 +19,13 @@ class Post extends Model
         'status',
         'published_at',
         'is_pinned',
+
+        // Event 
+        'is_event',
+        'event_date',
+        'event_end_date',
+        'event_time',
+        'event_location',
     ];
 
     protected function casts(): array
@@ -25,6 +33,10 @@ class Post extends Model
         return [
             'published_at' => 'datetime',
             'is_pinned' => 'boolean',
+            'is_event' => 'boolean',
+             
+            'event_date' => 'date', 
+            'event_end_date' => 'date',
         ];
     }
 

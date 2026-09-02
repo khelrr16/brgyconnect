@@ -1,33 +1,24 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-xl font-semibold text-gray-800">
-                    Blotter Record
-                </h2>
-
-                <p class="text-sm text-gray-500">
-                    View incident and hearing information
-                </p>
-            </div>
-
-            <a
-                href="{{ route('blotters.index') }}"
-                class="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
-            >
-                <i class="fa-solid fa-arrow-left"></i>
-                Back
-            </a>
-        </div>
+        <x-breadcrumb
+            :items="[
+                [
+                    'label' => 'Blotter Records',
+                    'url' => route('blotters.index'),
+                ],
+                [
+                    'label' => $blotter->blotter_number,
+                ],
+            ]"
+        />
     </x-slot>
-
 
     <div  
         x-data
         x-on:hearing-scheduled.window="window.location.reload()"
         x-on:hearing-updated.window="window.location.reload()"
-        class="min-h-screen py-8">
+        class="min-h-screen">
 
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 

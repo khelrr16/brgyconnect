@@ -4,14 +4,16 @@ use App\Http\Controllers\Admin\AccountVerificationController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\BlotterRecordController;
-use App\Http\Controllers\NewsFeedController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'feed.index')->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/announcements', [PostController::class, 'announcements']) ->name('announcements.index'); 
+Route::get('/posts/{post:slug}', [PostController::class, 'show']) ->name('posts.show');
+
 Route::view('/contacts', 'contacts')->name('contacts');
-Route::get('/feed', [NewsFeedController::class, 'index'])->name('feed.index');
 
 Route::middleware(['auth', 'verified.user'])->group(function () {
     

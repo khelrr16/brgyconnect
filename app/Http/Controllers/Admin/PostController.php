@@ -59,43 +59,19 @@ class PostController extends Controller
                 ]),
             ],
 
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
+            'title' => ['required', 'string', 'max:255'],
+            'excerpt' => ['nullable','string','max:1000'],
+            'content' => ['required','string'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'status' => ['required', Rule::in(['draft','published','archived']) ],
+            'is_pinned' => ['nullable','boolean'],
 
-            'excerpt' => [
-                'nullable',
-                'string',
-                'max:1000',
-            ],
-
-            'content' => [
-                'required',
-                'string',
-            ],
-
-            'image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:5120',
-            ],
-
-            'status' => [
-                'required',
-                Rule::in([
-                    'draft',
-                    'published',
-                    'archived',
-                ]),
-            ],
-
-            'is_pinned' => [
-                'nullable',
-                'boolean',
-            ],
+            // Event 
+            'is_event' => ['nullable', 'boolean'],
+            'event_date' => ['nullable', 'date', 'required_if:is_event,1'], 
+            'event_end_date' => ['nullable', 'date', 'after_or_equal:event_date'], 
+            'event_time' => ['nullable', 'date_format:H:i'], 
+            'event_location' => ['nullable', 'string', 'max:255'],
         ]);
 
         // Upload image if supplied
@@ -106,9 +82,11 @@ class PostController extends Controller
                 ->store('posts', 'public');
         }
 
+        $isEvent = $request->boolean('is_event');
+
         // Create post
         Post::create([
-            'created_by' => auth()->id(),
+            'created_by' => auth()->guard()->id(),
 
             'category' => $validated['category'],
 
@@ -131,6 +109,21 @@ class PostController extends Controller
                 : null,
 
             'is_pinned' => $request->boolean('is_pinned'),
+
+            // Event 
+            'is_event' => $isEvent,
+            'event_date' => $isEvent 
+                ? ($validated['event_date'] ?? null) 
+                : null, 
+            'event_end_date' => $isEvent 
+                ? ($validated['event_end_date'] ?? null) 
+                : null, 
+            'event_time' => $isEvent 
+                ? ($validated['event_time'] ?? null) 
+                : null, 
+            'event_location' => $isEvent 
+                ? ($validated['event_location'] ?? null) 
+                : null,
         ]);
 
         return redirect()
@@ -190,83 +183,68 @@ class PostController extends Controller
                     'other',
                 ]),
             ],
+            'title' => ['required', 'string', 'max:255'],
+            'excerpt' => ['nullable', 'string'],
+            'content' => ['required', 'string'],
+            'image' => ['nullable', 'image', 'max:5120'],
+            'status' => ['required', 'in:draft,published,archived'],
+            'is_pinned' => ['nullable', 'boolean'],
 
-            'title' => [
-                'required',
-                'string',
-                'max:255',
-            ],
-
-            'excerpt' => [
-                'nullable',
-                'string',
-                'max:1000',
-            ],
-
-            'content' => [
-                'required',
-                'string',
-            ],
-
-            'image' => [
-                'nullable',
-                'image',
-                'mimes:jpg,jpeg,png,webp',
-                'max:5120',
-            ],
-
-            'status' => [
-                'required',
-                Rule::in([
-                    'draft',
-                    'published',
-                    'archived',
-                ]),
-            ],
-
-            'is_pinned' => [
-                'nullable',
-                'boolean',
-            ],
+            // Event
+            'is_event' => ['nullable', 'boolean'],
+            'event_date' => ['nullable', 'date', 'required_if:is_event,1'],
+            'event_end_date' => ['nullable', 'date', 'after_or_equal:event_date'],
+            'event_time' => ['nullable', 'date_format:H:i'],
+            'event_location' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $data = [
-            'type' => $validated['type'],
-            'title' => $validated['title'],
-            'slug' => Str::slug($validated['title']),
-            'excerpt' => $validated['excerpt'] ?? null,
-            'content' => $validated['content'],
-            'status' => $validated['status'],
-            'is_pinned' => $request->boolean('is_pinned'),
-        ];
-
-        // Set published date only when publishing
-        if (
-            $validated['status'] === 'published'
-            && $post->status !== 'published'
-        ) {
-            $data['published_at'] = now();
-        }
-
-        // Upload replacement image
         if ($request->hasFile('image')) {
 
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
 
-            $data['image'] = $request->file('image')
+            $post->image = $request
+                ->file('image')
                 ->store('posts', 'public');
         }
 
-        $post->update($data);
+        $isEvent = $request->boolean('is_event');
+
+        $post->update([
+            'type' => $validated['type'],
+            'category' => $validated['category'],
+            'title' => $validated['title'],
+            'excerpt' => $validated['excerpt'] ?? null,
+            'content' => $validated['content'],
+
+            'status' => $validated['status'],
+
+            'published_at' => $validated['status'] === 'published'
+                ? ($post->published_at ?? now())
+                : null,
+
+            'is_pinned' => $request->boolean('is_pinned'),
+
+            // Event
+            'is_event' => $isEvent,
+            'event_date' => $isEvent
+                ? ($validated['event_date'] ?? null)
+                : null,
+            'event_end_date' => $isEvent
+                ? ($validated['event_end_date'] ?? null)
+                : null,
+            'event_time' => $isEvent
+                ? ($validated['event_time'] ?? null)
+                : null,
+            'event_location' => $isEvent
+                ? ($validated['event_location'] ?? null)
+                : null,
+        ]);
 
         return redirect()
             ->route('admin.posts.index')
-            ->with(
-                'success',
-                'Post updated successfully.'
-            );
+            ->with('success', 'Post updated successfully.');
     }
  
     /**
@@ -284,5 +262,21 @@ class PostController extends Controller
             'success',
             'Post deleted successfully.'
         );
+    }
+
+    public function announcements()
+    {
+        $announcements = Post::query()
+            ->where('type', 'announcement')
+            ->where('status', 'published')
+            ->where(function ($query) {
+                $query->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            })
+            ->orderByDesc('is_pinned')
+            ->orderByDesc('published_at')
+            ->paginate(9);
+
+        return view('posts.announcements', compact('announcements'));
     }
 }

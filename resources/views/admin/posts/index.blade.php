@@ -5,15 +5,13 @@
             :items="[
                 [
                     'label' => 'News & Announcements',
-                    'url' => route('admin.posts.index'),
                 ],
             ]"
         />
 
         <div class="mb-6 flex items-center justify-between">
-
             <div>
-                <h2 class="text-xl font-bold uppercase tracking-tight text-gray-800">
+                <h2 class="text-2xl font-bold text-gray-900">
                     News & Announcements
                 </h2>
 
@@ -35,9 +33,8 @@
                        hover:shadow-lg"
             >
                 <i class="fa-solid fa-plus"></i>
-                Create Post
+                New Post
             </a>
-
         </div>
 
     </x-slot>

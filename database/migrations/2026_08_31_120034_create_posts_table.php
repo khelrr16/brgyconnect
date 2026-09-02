@@ -56,11 +56,17 @@ return new class extends Migration
 
             // Useful for important announcements
             $table->boolean('is_pinned')->default(false);
+            $table->boolean('is_event') ->default(false);
+            $table->date('event_date') ->nullable();
+            $table->date('event_end_date') ->nullable();
+            $table->time('event_time') ->nullable();
+            $table->string('event_location') ->nullable();
 
             $table->timestamps();
 
             $table->index(['type', 'status']);
             $table->index('published_at');
+            $table->index(['is_event', 'event_date']);
         });
     }
 

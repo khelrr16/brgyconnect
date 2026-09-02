@@ -21,7 +21,7 @@
                         </div>
 
                         <a
-                            href="{{ route('feed.index') }}"
+                            href="{{ route('home') }}"
                             class="flex"
                         >
                             <span
@@ -108,7 +108,7 @@
                 <div class="w-full max-w-md p-5">
 
                     {{-- Mobile logo --}}
-                    <a href="{{ route('feed.index') }}">
+                    <a href="{{ route('home') }}">
                         <div class="mb-8 flex flex-col items-center text-center lg:hidden">
                             <img
                                 src="{{ asset('images/brgy_logo.png') }}"

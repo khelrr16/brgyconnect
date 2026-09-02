@@ -33,7 +33,7 @@
                     hover:shadow-lg">
 
                 <i class="fa-solid fa-plus"></i>
-                Create Blotter
+                New Record
             </a>
         </div>
     </x-slot>
