@@ -54,6 +54,50 @@
                     </div>
 
 
+                    {{-- Actions --}}
+                    <div class="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
+
+                        {{-- Edit --}}
+                        <a
+                            href="{{ route('blotters.edit', $blotter) }}"
+                            class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20"
+                        >
+                            <i class="fa-solid fa-pen"></i>
+                            Edit
+                        </a>
+
+
+                        {{-- Schedule Hearing --}}
+                        <livewire:blotters.schedule-hearing
+                            :blotterId="$blotter->id"
+                        />
+
+
+                        {{-- Print --}}
+                        <a
+                            href="{{ route('blotters.print', $blotter) }}"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20"
+                        >
+                            <i class="fa-solid fa-print"></i>
+                            Print
+                        </a>
+
+                        {{-- Notice to Respondent --}}
+                        <a
+                            href="{{ route('blotters.notice', $blotter) }}"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 px-3 py-1.5
+                                text-xs font-medium text-white
+                                bg-blue-600 rounded-lg
+                                hover:bg-blue-700"
+                        >
+                            <i class="fa-solid fa-file-signature"></i>
+                            Notice
+                        </a>
+
+                    </div>
+
                     {{-- Status --}}
                     <div class="flex items-start justify-start lg:justify-end">
 
@@ -72,38 +116,6 @@
                             <i class="fa-solid fa-circle text-[8px]"></i>
                             {{ $blotter->status }}
                         </span>
-
-                    </div>
-
-
-                    {{-- Actions --}}
-                    <div class="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
-
-                        {{-- Edit --}}
-                        <a
-                            href="{{ route('blotters.edit', $blotter) }}"
-                            class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/20"
-                        >
-                            <i class="fa-solid fa-pen"></i>
-                            Edit
-                        </a>
-
-
-                        {{-- Schedule Hearing --}}
-                        <livewire:blotters.schedule-hearing
-                            :blotterId="$blotter->id"
-                        />
-
-
-                        {{-- Print --}}
-                        <a
-                            href="{{ route('blotters.print', $blotter) }}"
-                            target="_blank"
-                            class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm hover:bg-white/20"
-                        >
-                            <i class="fa-solid fa-print"></i>
-                            Print
-                        </a>
 
                     </div>
 
@@ -186,7 +198,7 @@
 
                             <div>
                                 <h2 class="font-semibold text-gray-900">
-                                    Incident Description
+                                    Incident Information
                                 </h2>
 
                                 <p class="text-gray-500">
@@ -196,10 +208,17 @@
 
                         </div>
 
-                        <div class="rounded-xl bg-gray-50 p-4 text-sm leading-6 text-gray-700">
-                            {{ $blotter->incident_description }}
-                        </div>
+                        <div class="mt-6">
 
+                            <p class="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+                                Incident Description
+                            </p>
+
+                            <div class="rounded-xl bg-gray-50 p-4 text-sm leading-6 text-gray-700">
+                                {{ $blotter->incident_description }}
+                            </div>
+
+                        </div>
 
                         @if($blotter->action_taken)
 

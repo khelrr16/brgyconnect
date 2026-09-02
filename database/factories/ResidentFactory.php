@@ -23,7 +23,7 @@ class ResidentFactory extends Factory
             'middle_name' => $this->faker->optional(0.7)->lastName(), 
             'last_name' => $this->faker->lastName(), 
             'extension_name' => $this->faker->optional(0.15)->randomElement(['Jr.', 'Sr.', 'II', 'III']), 
-            'sex' => $this->faker->randomElement(['Male', 'Female', 'Other']),
+            'sex' => $this->faker->randomElement(['Male', 'Female']),
             'birth_date' => $this->faker->date(),
             'civil_status' => $this->faker->randomElement(['Single', 'Married', 'Widow/Widower', 'Divorced', 'Legally Separated']),
             'citizenship' => $this->faker->country(),

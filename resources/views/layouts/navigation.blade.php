@@ -1,183 +1,181 @@
-<nav
-    x-data="{ sidebarOpen: false }"
-    class="bg-white border-r border-gray-200"
->
-    {{-- Mobile top bar --}}
-    <div class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 lg:hidden">
-
-        <a href="{{ route('dashboard') }}" class="flex items-center">
-            <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-        </a>
-
-        <button
-            type="button"
-            @click="sidebarOpen = !sidebarOpen"
-            class="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-            aria-label="Toggle navigation"
-        >
-            <i
-                class="fa-solid"
-                :class="sidebarOpen ? 'fa-xmark' : 'fa-bars'"
-            ></i>
-        </button>
-    </div>
-
-
-    {{-- Mobile backdrop --}}
-    <div
-        x-show="sidebarOpen"
-        x-transition.opacity
-        @click="sidebarOpen = false"
-        class="fixed inset-0 z-40 bg-black/40 lg:hidden"
-        x-cloak
-    ></div>
-
-
-    {{-- Sidebar --}}
-    <aside
-        class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-200 bg-gradient-to-b from-blue-950 via-blue-700 to-blue-950 transition-transform duration-300 lg:translate-x-0"
-        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
-    >
-
-        {{-- Logo --}}
-        <div class="flex h-20 items-center border-b border-gray-200 px-6">
-
-            <a
-                href="{{ route('dashboard') }}"
-                class="flex items-center gap-3"
-            >
-                <x-application-logo
-                    class="block h-10 w-auto fill-current text-white"
-                />
-
-                <div>
-                    <p class="text-sm font-bold text-white">
-                        Barangay
-                    </p>
-
-                    <p class="text-xs text-white">
-                        Management System
-                    </p>
-                </div>
-            </a>
-
-        </div>
-
-
-        {{-- Navigation --}}
-        <div class="flex-1 overflow-y-auto px-4 py-6">
-
-            <p class="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-white">
-                Main Menu
-            </p>
-
-            <nav class="space-y-1">
-
-                {{-- Dashboard --}}
-                <x-admin-nav-link
-                    :href="route('dashboard')"
-                    :active="request()->routeIs('dashboard')"
-                >
-                    <i class="fa-solid fa-gauge-high w-5 text-center"></i>
-                    <span>Dashboard</span>
-                </x-admin-nav-link>
-
-                {{-- User Accounts --}}
-                @role('admin')
-                    <x-admin-nav-link
-                        :href="route('admin.users.index')"
-                        :active="request()->routeIs('admin.users.*')"
-                    >
-                        <i class="fa-solid fa-users w-5 text-center"></i>
-                        <span>User Accounts</span>
-                    </x-admin-nav-link>
-                @endrole
-
-                {{-- Residents --}}
-                <x-admin-nav-link
-                    :href="route('residents.index')"
-                    :active="request()->routeIs('residents.*')"
-                >
-                    <i class="fa-solid fa-users w-5 text-center"></i>
-                    <span>Residents</span>
-                </x-admin-nav-link>
-
-                {{-- Blotter --}}
-                <x-admin-nav-link
-                    :href="route('blotters.index')"
-                    :active="request()->routeIs('blotters.*')"
-                >
-                    <i class="fa-solid fa-file-lines w-5 text-center"></i>
-                    <span>Blotter Records</span>
-                </x-admin-nav-link>
-
-            </nav>
-
-
-            <p class="mb-3 mt-8 px-3 text-xs font-semibold uppercase tracking-wider text-white">
-                Account
-            </p>
-
-            <nav class="space-y-1">
-
-                {{-- Profile --}}
-                <x-admin-nav-link
-                    :href="route('profile.edit')"
-                    :active="request()->routeIs('profile.*')"
-                >
-                    <i class="fa-solid fa-user w-5 text-center"></i>
-                    <span>Profile</span>
-                </x-admin-nav-link>
-
-
-                {{-- Logout --}}
-                <form method="POST" action="{{ route('logout') }}">
-
-                    @csrf
-
-                    <button
-                        type="submit"
-                        class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white transition hover:bg-red-50 hover:text-red-600"
-                    >
-                        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-                        <span>Log Out</span>
-                    </button>
-
-                </form>
-
-            </nav>
-
-        </div>
-
-        {{-- User information --}}
-        <div class="border-t border-gray-200 p-4">
-
-            <div class="flex items-center gap-3">
-
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                    <i class="fa-solid fa-user"></i>
+<nav x-data="{ open: false }" class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
+    <!-- Primary Navigation Menu -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex gap-4">
+                
+                <div class="shrink-0 flex items-center">
+                    <a href="{{ route('home') }}">
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    </a>
                 </div>
 
-                <div class="min-w-0">
+                @auth
+                    <!-- Navigation Links -->
+                    @if (!auth()->user()->isVerified())
+                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <x-nav-link :href="route('verifications.create')" :active="request()->routeIs('verifications.create')">
+                                Verify
+                            </x-nav-link>
+                        </div>
 
-                    <p class="truncate text-sm font-semibold text-white">
-                        {{ Auth::user()->name }}
-                    </p>
-
-                    <p class="truncate text-xs text-white">
-                        {{ Auth::user()->email }}
-                    </p>
-
+                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <x-nav-link :href="route('verifications.status')" :active="request()->routeIs('verifications.status')">
+                                Status
+                            </x-nav-link>
+                        </div>
+                    @endif
+                @endauth
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')">
+                        Contact Us
+                    </x-nav-link>
                 </div>
 
             </div>
 
+            @auth
+
+                <!-- Settings Dropdown -->
+                <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <div>
+                                    {{ Auth::user()->name }} 
+                                    <i class="fa-solid fa-angle-down"></i>
+                                </div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            @if(auth()->user()->profile_completed)
+                                <x-dropdown-link :href="route('profile.edit')">
+                                    Profile
+                                </x-dropdown-link>
+                            @endif
+
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    Log Out
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+
+            @else
+
+                <div class="flex items-center ms-6">
+
+                    <a
+                        href="{{ route('login') }}"
+                        class="inline-flex items-center gap-2
+                            rounded-lg
+                            bg-indigo-600
+                            border border-indigo-700
+                            px-3 py-2.5
+                            text-sm font-semibold
+                            text-white
+                            shadow-sm
+                            hover:bg-indigo-700
+                            hover:shadow-md
+                            transition-all duration-150
+                            focus:outline-none
+                            focus:ring-2
+                            focus:ring-indigo-500
+                            focus:ring-offset-2"
+                    >
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Login
+                    </a>
+
+                </div>
+            @endauth
+
+            <!-- Hamburger -->
+            @auth
+                <div class="-me-2 flex items-center sm:hidden">
+                    <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            @endauth
         </div>
+    </div>
 
-    </aside>
+    <!-- Responsive Navigation Menu -->
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        @auth
+            <div class="pt-2 pb-3 space-y-1">
+                @if (!auth()->user()->isVerified())
+                    <x-responsive-nav-link :href="route('verifications.create')" :active="request()->routeIs('verifications.create')">
+                        Verify
+                    </x-responsive-nav-link>
 
+                    <x-responsive-nav-link :href="route('verifications.create')" :active="request()->routeIs('verifications.status')">
+                        Status
+                    </x-responsive-nav-link>
+                @endif
+            </div>
 
-    {{-- Spacer for desktop sidebar --}}
-    <div class="hidden lg:block lg:w-64"></div>
+            <!-- Responsive Settings Options -->
+            <div class="pt-4 pb-1 border-t border-gray-200">
+                <div class="px-4">
+                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                </div>
 
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('profile.edit')">
+                        Profile
+                    </x-responsive-nav-link>
+
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <x-responsive-nav-link :href="route('logout')"
+                                onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                            Log Out
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Responsive Settings Options -->
+            <div class="pt-4 pb-1 border-t border-gray-200">
+                <div class="px-4">
+                    <div class="font-medium text-base text-gray-800">Test</div>
+                    <div class="font-medium text-sm text-gray-500">Test</div>
+                </div>
+
+                <div class="mt-3 space-y-1">
+                    <x-responsive-nav-link :href="route('profile.edit')">
+                        Profile
+                    </x-responsive-nav-link>
+
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <x-responsive-nav-link :href="route('logout')"
+                                onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                            Log Out
+                        </x-responsive-nav-link>
+                    </form>
+                </div>
+            </div>
+        @endauth
+    </div>
 </nav>

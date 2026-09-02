@@ -547,6 +547,37 @@ new class extends Component
 
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                    <label class="mb-1 block font-medium">
+                        Status
+                    </label>
+
+                    <select
+                        wire:model="status"
+                        class="w-full rounded-lg border-gray-300"
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="Under Investigation">
+                            Under Investigation
+                        </option>
+                        <option value="Settled">Settled</option>
+                        <option value="Referred">Referred</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+
+
+                <div>
+                    <label class="mb-1 block font-medium">
+                        Remarks
+                    </label>
+
+                    <textarea
+                        wire:model="remarks"
+                        rows="1"
+                        class="w-full rounded-lg border-gray-300"
+                    ></textarea>
+                </div>
 
                 <div>
                     <label class="mb-1 block font-medium">
@@ -642,38 +673,6 @@ new class extends Component
                         </p>
                     @enderror
 
-                </div>
-
-                <div>
-                    <label class="mb-1 block font-medium">
-                        Status
-                    </label>
-
-                    <select
-                        wire:model="status"
-                        class="w-full rounded-lg border-gray-300"
-                    >
-                        <option value="Pending">Pending</option>
-                        <option value="Under Investigation">
-                            Under Investigation
-                        </option>
-                        <option value="Settled">Settled</option>
-                        <option value="Referred">Referred</option>
-                        <option value="Closed">Closed</option>
-                    </select>
-                </div>
-
-
-                <div>
-                    <label class="mb-1 block font-medium">
-                        Remarks
-                    </label>
-
-                    <textarea
-                        wire:model="remarks"
-                        rows="1"
-                        class="w-full rounded-lg border-gray-300"
-                    ></textarea>
                 </div>
 
             </div>

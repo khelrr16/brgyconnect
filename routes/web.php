@@ -1,57 +1,85 @@
 <?php
 
+use App\Http\Controllers\Admin\AccountVerificationController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\BlotterRecordController;
+use App\Http\Controllers\NewsFeedController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentController;
-use App\Http\Controllers\UserManagementController;
-use App\Models\BlotterRecord;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
+Route::view('/', 'feed.index')->name('home');
+Route::view('/contacts', 'contacts')->name('contacts');
+Route::get('/feed', [NewsFeedController::class, 'index'])->name('feed.index');
 
-    return view('welcome');
+Route::middleware(['auth', 'verified.user'])->group(function () {
+    
 });
 
-Route::middleware(['auth', 'role:super-admin'])->group(function () {
-    Route::get('/admin/users', [UserManagementController::class, 'index'])->name('admin.users.index');
-    Route::patch('/admin/users/{user}/roles', [UserManagementController::class, 'updateRoles'])->name('admin.users.roles.update');
+Route::middleware(['auth'])->group(function () {
+    
+    Route::middleware('role:super-admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+
+        Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
+        Route::get('/users/{user}/edit', [UserManagementController::class, 'edit'])->name('users.edit');
+        Route::post('/users', [UserManagementController::class, 'store'])->name('users.store');
+        Route::post('/users/password/reset', [UserManagementController::class, 'resetPassword'])->name('users.password.reset');
+        Route::patch('/users/{user}', [UserManagementController::class, 'update'])->name('users.update');
+        Route::patch('/users/{user}/roles', [UserManagementController::class, 'updateRoles'])->name('users.roles.update');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
+
+        Route::post('/verifications/{verification}/search-residents', [AccountVerificationController::class, 'searchResidents'])->name('verifications.search-residents');
+        Route::patch('/verifications/{verification}/approve', [AccountVerificationController::class, 'approve'])->name('verifications.approve');
+        Route::patch('/verifications/{verification}/reject', [AccountVerificationController::class, 'reject'])->name('verifications.reject');
+
+        Route::prefix('posts')->name('posts.')->group(function () {
+            Route::get('/', [PostController::class, 'index'])->name('index');
+            Route::get('/create', [PostController::class, 'create'])->name('create');
+            Route::get('/{post}/edit', [PostController::class, 'edit'])->name('edit');
+            Route::post('/create', [PostController::class, 'store'])->name('store');
+            Route::patch('/{post}', [PostController::class, 'update'])->name('update');
+            Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    Route::prefix('residents')->name('residents.')->group(function () {
+        Route::get('/', [ResidentController::class, 'index'])->name('index');
+        Route::get('/create', [ResidentController::class, 'create'])->name('create');
+        Route::get('/{resident}', [ResidentController::class, 'show'])->name('show');
+        Route::get('/{resident}/edit', [ResidentController::class, 'edit'])->name('edit');
+        Route::patch('/{resident}', [ResidentController::class, 'update'])->name('update');
+    });
+
+   
+
+    Route::middleware('role:super-admin|blotter-officer')->prefix('blotters')->name('blotters.')->group(function () {
+        Route::view('/', 'blotters.index')->name('index');
+        Route::view('/create', 'blotters.create')->name('create');
+        Route::get('/{blotter}', [BlotterRecordController::class, 'show'])->name('show');
+        Route::get('/{blotter}/edit', [BlotterRecordController::class, 'edit'])->name('edit');
+        Route::get('/{blotter}/print', [BlotterRecordController::class, 'print'])->name('print');
+        Route::get('/{blotter}/hearing/{hearing}/print', [BlotterRecordController::class, 'printHearing'])->name('hearings.print');
+        Route::get('/{blotter}/notice', [BlotterRecordController::class, 'notice'])->name('notice');
+        Route::patch('/{blotter}/status',[BlotterRecordController::class, 'updateStatus'])->name('status.update');
+    });
 });
 
 Route::middleware('auth')->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
 
-    Route::get('/residents', [ResidentController::class, 'index'])->name('residents.index');
-    Route::get('/residents/create', [ResidentController::class, 'create'])->name('residents.create');
-    Route::get('/residents/{resident}', [ResidentController::class, 'show'])->name('residents.show');
-    Route::get('/residents/{resident}/edit', [ResidentController::class, 'edit'])->name('residents.edit');
-    Route::patch('/residents/{resident}', [ResidentController::class, 'update'])->name('residents.update');
+    // Account Verification routes
+    Route::get('/verification', [AccountVerificationController::class, 'create'])->name('verifications.create');
+    Route::get('/verification/status', [AccountVerificationController::class, 'status'])->name('verifications.status');
+    Route::post('/verification', [AccountVerificationController::class, 'store'])->name('verifications.store');
 
-    Route::view('/blotters', 'blotters.index')->name('blotters.index')->middleware('permission:view-blotter-records');
-    Route::view('/blotters/create', 'blotters.create')->name('blotters.create')->middleware('permission:create-blotter-records');
-
-    Route::get('/blotters/{blotter}/edit', function (BlotterRecord $blotter) {
-        return view('blotters.edit', compact('blotter'));
-    })->name('blotters.edit')->middleware('permission:edit-blotter-records');
-
-    Route::get('/blotters/{blotter}', function (BlotterRecord $blotter) {
-        return view('blotters.show', compact('blotter'));
-    })->name('blotters.show')->middleware('permission:view-blotter-records');
-
-    Route::get('/blotters/{blotter}/print', function (BlotterRecord $blotter) {
-        $blotter->load([
-            'parties',
-            'attachments',
-            'hearings',
-            'creator',
-        ]);
-
-        return view('blotters.print', compact('blotter'));
-    })->name('blotters.print')->middleware('permission:view-blotter-records');
-});
-
-Route::middleware('auth')->group(function () {
+    Route::middleware('role:super-admin')->group(function () {
+        Route::get('/verifications', [AccountVerificationController::class, 'index'])->name('admin.verifications.index');
+        Route::get('/verifications/{verification}', [AccountVerificationController::class, 'show'])->name('admin.verifications.show');
+    });
+    
+    // Profile routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -13,18 +13,92 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <body class="font-sans antialiased">
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+        @php
+            $notification = null;
+
+            if (session('success')) {
+                $notification = [
+                    'message' => session('success'),
+                    'type' => 'success',
+                    'icon' => 'fa-circle-check',
+                    'classes' => 'bg-green-600',
+                ];
+            } elseif (session('error')) {
+                $notification = [
+                    'message' => session('error'),
+                    'type' => 'error',
+                    'icon' => 'fa-circle-xmark',
+                    'classes' => 'bg-red-600',
+                ];
+            } elseif (session('warning')) {
+                $notification = [
+                    'message' => session('warning'),
+                    'type' => 'warning',
+                    'icon' => 'fa-triangle-exclamation',
+                    'classes' => 'bg-amber-500',
+                ];
+            } elseif (session('info')) {
+                $notification = [
+                    'message' => session('info'),
+                    'type' => 'info',
+                    'icon' => 'fa-circle-info',
+                    'classes' => 'bg-blue-600',
+                ];
+            }
+        @endphp
+
+        @if ($notification)
+            <div
+                x-data="{ show: true }"
+                x-init="setTimeout(() => show = false, 4000)"
+                x-show="show"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 translate-x-5"
+                x-transition:enter-end="opacity-100 translate-x-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-x-0"
+                x-transition:leave-end="opacity-0 translate-x-5"
+                class="fixed right-6 top-6 z-50
+                    flex items-center gap-3
+                    rounded-lg
+                    {{ $notification['classes'] }}
+                    px-5 py-3
+                    text-white
+                    shadow-lg"
+                role="alert"
+            >
+                <i
+                    class="fa-solid {{ $notification['icon'] }}"
+                    aria-hidden="true"
+                ></i>
+
+                <span class="text-sm font-medium">
+                    {{ $notification['message'] }}
+                </span>
+
+                <button
+                    type="button"
+                    @click="show = false"
+                    class="ml-2 text-lg leading-none
+                        opacity-80 hover:opacity-100
+                        transition-opacity"
+                    aria-label="Dismiss notification"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
+        @endif
+    
+        <div class="min-h-screen">
+            <main>
+                {{ $slot }}
+            </main>
         </div>
+
+        @livewireScripts
     </body>
 </html>

@@ -120,30 +120,7 @@ new class extends Component
 ?>
 
 <div class="space-y-6">
-
-    {{-- Header --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">
-                Blotter Records
-            </h1>
-
-            <p class="mt-1 text-sm text-gray-500">
-                Monitor incidents, cases, and scheduled hearings.
-            </p>
-        </div>
-
-        <a
-            href="{{ route('blotters.create') }}"
-            class="inline-flex w-fit items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
-        >
-            <i class="fa-solid fa-plus"></i>
-            New Blotter
-        </a>
-
-    </div>
-
+    
     <div class="grid grid-cols-1 item-stretch gap-4 md:grid-cols-2">
 
         {{-- Summary Cards --}}

@@ -7,6 +7,7 @@ use App\Models\Immunization;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Resident extends Model
 {
@@ -45,6 +46,23 @@ class Resident extends Model
         'birth_date' => 'date',
     ];
 
+    public function getFullNameAttribute()
+    {
+        $fullName = $this->first_name;
+
+        if ($this->middle_name) {
+            $fullName .= ' ' . $this->middle_name;
+        }
+
+        $fullName .= ' ' . $this->last_name;
+
+        if ($this->extension_name) {
+            $fullName .= ' ' . $this->extension_name;
+        }
+
+        return $fullName;
+    }
+
     protected function address(): Attribute
     {
         return Attribute::make(
@@ -59,7 +77,7 @@ class Resident extends Model
                     ->implode(', ');
             }
         );
-    }
+    }    
 
     public function immunizations()
     {
@@ -69,5 +87,10 @@ class Resident extends Model
     public function blotterRecords()
     {
         return $this->hasMany(BlotterRecord::class);
+    }
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class);
     }
 }

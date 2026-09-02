@@ -139,7 +139,7 @@ new class extends Component
     <button
         type="button"
         @click="open = true"
-        class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20"
+        class="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white hover:bg-white/20"
     >
         <i class="fa-solid fa-calendar-plus"></i>
         Schedule Hearing
