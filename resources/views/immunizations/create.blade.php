@@ -4,8 +4,8 @@
         <x-breadcrumb
             :items="[
                 [
-                    'label' => 'Blotter Records',
-                    'url' => route('blotters.index'),
+                    'label' => 'Immunization Records',
+                    'url' => route('admin.immunizations.index'),
                 ],
                 [
                     'label' => 'New Record',

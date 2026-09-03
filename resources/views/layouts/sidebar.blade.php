@@ -148,6 +148,17 @@
                         <span>Blotter Records</span>
                     </x-admin-nav-link>
                 @endcan
+
+                {{-- Immunization --}}
+                @can('immunization.view')
+                    <x-admin-nav-link
+                        :href="route('admin.immunizations.index')"
+                        :active="request()->routeIs('admin.immunizations.*')"
+                    >
+                        <i class="fa-solid fa-syringe w-5 text-center"></i>
+                        <span>Immunization Records</span>
+                    </x-admin-nav-link>
+                @endcan
             </nav>
 
 

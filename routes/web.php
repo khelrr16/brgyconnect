@@ -84,6 +84,7 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('immunization')->name('immunizations.')->group(function () {
             Route::get('/', [ImmunizationController::class, 'index'])->name('index');
             Route::get('/create', [ImmunizationController::class, 'create'])->name('create');
+            Route::get('/report', [ImmunizationController::class, 'report'])->name('report');
             Route::get('/{immunization}', [ImmunizationController::class, 'show'])->name('show');
             Route::get('/{immunization}/edit', [ImmunizationController::class, 'edit'])->name('edit');
             Route::patch('/{immunization}', [ImmunizationController::class, 'update'])->name('update');

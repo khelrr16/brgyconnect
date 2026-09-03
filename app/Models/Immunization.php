@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\VaccineDose;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,7 @@ class Immunization extends Model
     use HasFactory;
 
     protected $fillable = [
+        'family_id',
         'resident_id',
         'parent_first_name',
         'parent_last_name',
@@ -36,6 +38,28 @@ class Immunization extends Model
         'fic_date',
         'cic_date',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Immunization $immunization): void {
+            if (! empty($immunization->family_id)) {
+                return;
+            }
+
+            $lastFamilyId = static::query()
+                ->where('family_id', 'like', 'FF-%')
+                ->orderByDesc('id')
+                ->value('family_id');
+
+            $nextNumber = 1;
+
+            if ($lastFamilyId && preg_match('/(\d+)$/', $lastFamilyId, $matches)) {
+                $nextNumber = ((int) $matches[1]) + 1;
+            }
+
+            $immunization->family_id = 'FF-' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+        });
+    }
 
     protected $casts = [
         'birthday'                      => 'date',
@@ -82,16 +106,19 @@ class Immunization extends Model
 
     public function getIsFullyImmunizedAttribute(): bool
     {
-        $required = collect(config('immunization'))
-            ->flatMap(fn ($vaccines) => collect($vaccines)->map(
-                fn ($doses, $vaccine) => ['vaccine' => $vaccine, 'doses' => $doses]
-            ));
+        return $this->fic_date !== null;
+    }
 
-        return $required->every(function ($r) {
-            return $this->vaccineDoses
-                ->where('vaccine', $r['vaccine'])
-                ->whereNotNull('date_given')
-                ->count() >= $r['doses'];
-        });
+    public function getCompletionStatusAttribute(): string
+    {
+        if ($this->cic_date !== null) {
+            return 'CIC';
+        }
+
+        if ($this->fic_date !== null) {
+            return 'FIC';
+        }
+
+        return 'In progress';
     }
 }

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'delete-blotter-records',
             'manage-blotter-records',
             'schedule-hearings',
+            'immunization.view',
         ];
 
         foreach ($permissions as $permission) {

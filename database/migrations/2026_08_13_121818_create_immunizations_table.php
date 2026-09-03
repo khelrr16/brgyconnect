@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('immunizations', function (Blueprint $table) {
             $table->id();
+            $table->string('family_id')->unique();
 
             // Parent linkage — nullable FK to residents
             $table->foreignId('resident_id')->nullable()->constrained('residents')->nullOnDelete();
