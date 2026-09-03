@@ -104,39 +104,47 @@
                 @endrole
 
                 {{-- Household --}}
-                <x-admin-nav-link
-                    :href="route('admin.households.index')"
-                    :active="request()->routeIs('admin.households.*')"
-                >
-                    <i class="fa-solid fa-house w-5 text-center"></i>
-                    <span>Households</span>
-                </x-admin-nav-link>
+                @can('households.view')
+                    <x-admin-nav-link
+                        :href="route('admin.households.index')"
+                        :active="request()->routeIs('admin.households.*')"
+                    >
+                        <i class="fa-solid fa-house w-5 text-center"></i>
+                        <span>Households</span>
+                    </x-admin-nav-link>
+                @endcan
 
                 {{-- Residents --}}
-                <x-admin-nav-link
-                    :href="route('admin.residents.index')"
-                    :active="request()->routeIs('admin.residents.*')"
-                >
-                    <i class="fa-solid fa-users w-5 text-center"></i>
-                    <span>Residents</span>
-                </x-admin-nav-link>
+                @can('residents.view')
+                    <x-admin-nav-link
+                        :href="route('admin.residents.index')"
+                        :active="request()->routeIs('admin.residents.*')"
+                    >
+                        <i class="fa-solid fa-users w-5 text-center"></i>
+                        <span>Residents</span>
+                    </x-admin-nav-link>
+                @endcan
 
-                <x-admin-nav-link
-                    :href="route('admin.assistance-requests.index')"
-                    :active="request()->routeIs('admin.assistance-requests.*')"
-                >
-                    <i class="fa-solid fa-hands-helping w-5 text-center"></i>
-                    <span>Assistance Requests</span>
-                </x-admin-nav-link>
+                @can('assistance-requests.view')
+                    <x-admin-nav-link
+                        :href="route('admin.assistance-requests.index')"
+                        :active="request()->routeIs('admin.assistance-requests.*')"
+                    >
+                        <i class="fa-solid fa-hands-helping w-5 text-center"></i>
+                        <span>Assistance Requests</span>
+                    </x-admin-nav-link>
+                @endcan
 
                 {{-- Posts --}}
-                <x-admin-nav-link
-                    :href="route('admin.posts.index')"
-                    :active="request()->routeIs('admin.posts.*')"
-                >
-                    <i class="fa-regular fa-newspaper"></i>
-                    <span class="tracking-tight">News & Announcements</span>
-                </x-admin-nav-link>
+                @can('posts.view')
+                    <x-admin-nav-link
+                        :href="route('admin.posts.index')"
+                        :active="request()->routeIs('admin.posts.*')"
+                    >
+                        <i class="fa-regular fa-newspaper"></i>
+                        <span class="tracking-tight">News & Announcements</span>
+                    </x-admin-nav-link>
+                @endcan
 
                 {{-- Blotter --}}
                 @can('blotter.view')

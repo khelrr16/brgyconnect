@@ -27,8 +27,9 @@ Route::middleware(['auth', 'verified.user'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     
-    Route::middleware('role:super-admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role:super-admin|admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']) ->name('dashboard');
+        Route::get('/dashboard/population-report', [DashboardController::class, 'populationReport'])->name('dashboard.population-report');
 
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
@@ -44,7 +45,7 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/verifications/{verification}/reject', [AccountVerificationController::class, 'reject'])->name('verifications.reject');
 
         // Posts
-        Route::prefix('post')->name('posts.')->group(function () {
+        Route::prefix('post')->name('posts.')->middleware('permission:posts.view')->group(function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::get('/create', [PostController::class, 'create'])->name('create');
             Route::get('/{post}/edit', [PostController::class, 'edit'])->name('edit');
@@ -54,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Households
-        Route::prefix('household')->name('households.')->group(function () {
+        Route::prefix('household')->name('households.')->middleware('permission:households.view')->group(function () {
             Route::get('/', [HouseholdController::class, 'index'])->name('index');
             Route::get('/create', [HouseholdController::class, 'create'])->name('create');
             Route::get('/{household}', [HouseholdController::class, 'show'])->name('show');
@@ -63,7 +64,7 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Residents
-        Route::prefix('resident')->name('residents.')->group(function () {
+        Route::prefix('resident')->name('residents.')->middleware('permission:residents.view')->group(function () {
             Route::get('/', [ResidentController::class, 'index'])->name('index');
             Route::get('/{household}/create', [ResidentController::class, 'create'])->name('create');
             Route::get('/{resident}', [ResidentController::class, 'show'])->name('show');
@@ -72,8 +73,8 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Assistance Requests
-        Route::get( '/assistance-requests', [AdminAssistanceRequestController::class, 'index'] )->name('assistance-requests.index'); 
-        Route::get( '/assistance-requests/{assistanceRequest}', [AdminAssistanceRequestController::class, 'show'] )->name('assistance-requests.show'); 
+        Route::get( '/assistance-requests', [AdminAssistanceRequestController::class, 'index'] )->middleware('permission:assistance-requests.view')->name('assistance-requests.index'); 
+        Route::get( '/assistance-requests/{assistanceRequest}', [AdminAssistanceRequestController::class, 'show'] )->middleware('permission:assistance-requests.view')->name('assistance-requests.show'); 
         Route::patch( '/assistance-requests/{assistanceRequest}/process', [AdminAssistanceRequestController::class, 'process'] )->name('assistance-requests.process'); 
         Route::patch( '/assistance-requests/{assistanceRequest}/approve', [AdminAssistanceRequestController::class, 'approve'] )->name('assistance-requests.approve'); 
         Route::patch( '/assistance-requests/{assistanceRequest}/reject', [AdminAssistanceRequestController::class, 'reject'] )->name('assistance-requests.reject');
@@ -81,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get( '/certificates/indigency/{assistanceRequest}/print', [AdminAssistanceRequestController::class, 'print'] )->name('certificates.indigency.print');
 
         // Residents
-        Route::prefix('immunization')->name('immunizations.')->group(function () {
+        Route::prefix('immunization')->name('immunizations.')->middleware('permission:immunization.view')->group(function () {
             Route::get('/', [ImmunizationController::class, 'index'])->name('index');
             Route::get('/create', [ImmunizationController::class, 'create'])->name('create');
             Route::get('/report', [ImmunizationController::class, 'report'])->name('report');
@@ -99,7 +100,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/certificates/assistance/request', [AssistanceRequestController::class, 'store'])->name('certificate.assistance.store');
    
 
-    Route::middleware('role:super-admin|blotter-officer')->prefix('blotters')->name('blotters.')->group(function () {
+    Route::middleware(['role:super-admin|admin', 'permission:blotter.view'])->prefix('blotters')->name('blotters.')->group(function () {
         Route::view('/', 'blotters.index')->name('index');
         Route::view('/create', 'blotters.create')->name('create');
         Route::get('/{blotter}', [BlotterRecordController::class, 'show'])->name('show');

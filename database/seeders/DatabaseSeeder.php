@@ -26,6 +26,11 @@ class DatabaseSeeder extends Seeder
             'delete-blotter-records',
             'manage-blotter-records',
             'schedule-hearings',
+            'households.view',
+            'residents.view',
+            'assistance-requests.view',
+            'posts.view',
+            'blotter.view',
             'immunization.view',
         ];
 
@@ -41,8 +46,8 @@ class DatabaseSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
-        $blotterOfficerRole = Role::firstOrCreate([
-            'name' => 'blotter-officer',
+        $adminRole = Role::firstOrCreate([
+            'name' => 'admin',
             'guard_name' => 'web',
         ]);
 
@@ -52,12 +57,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $superAdminRole->syncPermissions($permissions);
-        $blotterOfficerRole->syncPermissions([
-            'view-blotter-records',
-            'create-blotter-records',
-            'edit-blotter-records',
-            'schedule-hearings',
-        ]);
+        $adminPermissions = [
+            'households.view',
+            'residents.view',
+            'assistance-requests.view',
+            'posts.view',
+            'blotter.view',
+            'immunization.view',
+        ];
+        $adminRole->syncPermissions([]);
         $memberRole->syncPermissions([]);
 
         Resident::factory(50)
@@ -84,9 +92,16 @@ class DatabaseSeeder extends Seeder
         ])->assignRole($superAdminRole);
 
         User::factory()->create([
-            'name' => 'Blotter Officer',
-            'email' => 'blotter@gmail.com',
-            'password' => bcrypt('blotter123'),
-        ])->assignRole($blotterOfficerRole);
+            'name' => 'Admin User',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('admin123'),
+        ])->assignRole($adminRole);
+        User::where('email', 'admin@gmail.com')->first()->syncPermissions($adminPermissions);
+
+        User::factory()->create([
+            'name' => 'Member User',
+            'email' => 'member@gmail.com',
+            'password' => bcrypt('member123'),
+        ])->assignRole($memberRole);
     }
 }

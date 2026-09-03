@@ -293,7 +293,8 @@
                                             <form
                                                 method="POST"
                                                 action="{{ route('admin.users.roles.update', $user) }}"
-                                                class="inline-flex items-center gap-2"
+                                                x-data="{ selectedRole: '{{ $user->roles->first()?->name ?? 'member' }}', permissionsOpen: false }"
+                                                class="flex flex-wrap items-center justify-end gap-2"
                                             >
 
                                                 @csrf
@@ -302,6 +303,7 @@
 
                                                 <select
                                                     name="role"
+                                                    x-model="selectedRole"
                                                     class="block w-36 rounded-md
                                                            border-gray-300
                                                            shadow-sm
@@ -330,6 +332,49 @@
                                                     @endforeach
 
                                                 </select>
+
+                                                <button
+                                                    type="button"
+                                                    x-show="selectedRole === 'admin'"
+                                                    x-cloak
+                                                    @click="permissionsOpen = true"
+                                                    class="inline-flex items-center gap-1.5 rounded-md border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition"
+                                                >
+                                                    <i class="fa-solid fa-sliders"></i>
+                                                    Permissions
+                                                </button>
+
+                                                <div
+                                                    x-show="permissionsOpen"
+                                                    x-cloak
+                                                    x-transition.opacity
+                                                    @keydown.escape.window="permissionsOpen = false"
+                                                    @click.self="permissionsOpen = false"
+                                                    class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 px-4 text-left"
+                                                >
+                                                    <div x-show="permissionsOpen" x-transition class="w-full max-w-md rounded-xl bg-white shadow-2xl ring-1 ring-black/10">
+                                                        <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+                                                            <div>
+                                                                <h3 class="font-semibold text-gray-900">Admin permissions</h3>
+                                                                <p class="mt-1 text-xs text-gray-500">Choose which areas this admin can access.</p>
+                                                            </div>
+                                                            <button type="button" @click="permissionsOpen = false" class="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600" aria-label="Close permissions">
+                                                                <i class="fa-solid fa-xmark"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="grid gap-3 px-5 py-5 sm:grid-cols-2">
+                                                            @foreach($permissions as $permission => $label)
+                                                                <label class="flex items-center gap-2 rounded-lg border border-gray-200 p-3 text-sm text-gray-700 hover:bg-gray-50">
+                                                                    <input type="checkbox" name="permissions[]" value="{{ $permission }}" @checked($user->hasPermissionTo($permission)) class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                                                    {{ $label }}
+                                                                </label>
+                                                            @endforeach
+                                                        </div>
+                                                        <div class="flex justify-end border-t border-gray-100 px-5 py-4">
+                                                            <button type="button" @click="permissionsOpen = false" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Done</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
 
                                                 <button

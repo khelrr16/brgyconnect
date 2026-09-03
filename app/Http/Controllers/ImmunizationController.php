@@ -92,7 +92,9 @@ class ImmunizationController extends Controller
                 ))
                     ->orWhereBetween('vitamin_a_date', [$dateFrom->toDateString(), $dateTo->toDateString()])
                     ->orWhereBetween('mnp_90_sachets_date', [$dateFrom->toDateString(), $dateTo->toDateString()])
-                    ->orWhereBetween('mnp_completed_date', [$dateFrom->toDateString(), $dateTo->toDateString()]);
+                    ->orWhereBetween('mnp_completed_date', [$dateFrom->toDateString(), $dateTo->toDateString()])
+                    ->orWhereBetween('fic_date', [$dateFrom->toDateString(), $dateTo->toDateString()])
+                    ->orWhereBetween('cic_date', [$dateFrom->toDateString(), $dateTo->toDateString()]);
             })
             ->orderBy('infant_last_name')
             ->orderBy('infant_first_name')
@@ -121,6 +123,10 @@ class ImmunizationController extends Controller
             'vitaminACount' => $rows->sum(fn ($row) => $row['supplements']->has('Vitamin A') ? 1 : 0),
             'mnp90Count' => $rows->sum(fn ($row) => $row['supplements']->has('MNP 90 sachets') ? 1 : 0),
             'mnpCompletedCount' => $rows->sum(fn ($row) => $row['supplements']->has('MNP completed') ? 1 : 0),
+            'ficCount' => $immunizations->filter(fn (Immunization $immunization) => $immunization->fic_date?->betweenIncluded($dateFrom, $dateTo))->count(),
+            'cicCount' => $immunizations->filter(fn (Immunization $immunization) => $immunization->cic_date?->betweenIncluded($dateFrom, $dateTo))->count(),
+            'totalRecorded' => $rows->count(),
+            'lowBirthWeightCount' => $rows->filter(fn ($row) => $row['immunization']->low_birth_weight)->count(),
         ]);
     }
 

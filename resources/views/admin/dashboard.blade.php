@@ -40,6 +40,11 @@
 
                     </div>
 
+                    <a href="{{ route('admin.dashboard.population-report') }}" target="_blank" class="inline-flex items-center gap-2 self-start rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 sm:self-auto">
+                        <i class="fa-solid fa-print"></i>
+                        Population report
+                    </a>
+
                 </div>
 
             </div>
@@ -398,6 +403,19 @@
 
                 </div>
 
+            </div>
+
+            <div class="mt-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h2 class="font-bold text-gray-900">Labor Force and Priority Groups</h2>
+                        <p class="mt-1 text-sm text-gray-500">Residents by employment and support category.</p>
+                    </div>
+                    <i class="fa-solid fa-briefcase text-indigo-600"></i>
+                </div>
+                <div class="mt-6 h-80">
+                    <canvas id="laborForceChart"></canvas>
+                </div>
             </div>
 
 
@@ -792,8 +810,29 @@
 
                     cutout: '60%'
                 }
-            }DD
+            }
         );
+
+        const laborForceLabels = @json(array_keys($laborForce));
+        const laborForceData = @json(array_values($laborForce));
+
+        new Chart(document.getElementById('laborForceChart'), {
+            type: 'bar',
+            data: {
+                labels: laborForceLabels,
+                datasets: [{
+                    label: 'Residents',
+                    data: laborForceData,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                ...commonOptions,
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+        });
 
     </script>
 

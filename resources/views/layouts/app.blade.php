@@ -98,7 +98,7 @@
     
         <div class="min-h-screen">
 
-            @role('super-admin|blotter-officer|resident-officer')
+            @role('super-admin|admin')
                 @include('layouts.sidebar')
 
                 <!-- Page Content -->
