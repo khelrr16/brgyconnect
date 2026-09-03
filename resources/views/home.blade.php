@@ -319,7 +319,7 @@
 
 
                                         <a
-                                            href="{{ route('posts.show', $event->slug) }}"
+                                            href="#"
                                             class="mt-2 inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800"
                                         >
                                             Read Article

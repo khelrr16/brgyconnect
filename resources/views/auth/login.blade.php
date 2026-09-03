@@ -2,7 +2,7 @@
 
     <div class="min-h-screen bg-gray-50 py-12 sm:px-1 lg:px-8">
 
-        <div class="mx-auto grid max-w-5xl bg-gray-200 p-5 rounded-xl lg:grid-cols-2">
+        <div class="mx-auto shadow-md grid max-w-5xl bg-gray-200 p-5 rounded-xl lg:grid-cols-2">
 
             {{-- ================================================= --}}
             {{-- LEFT / BRANDING --}}

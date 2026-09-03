@@ -4,9 +4,10 @@ namespace App\Models;
 
 use App\Models\BlotterRecord;
 use App\Models\Immunization;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Resident extends Model
@@ -14,6 +15,7 @@ class Resident extends Model
     use HasFactory;
 
     protected $fillable = [
+        'household_id',
         'resident_id',
         'first_name',
         'middle_name',
@@ -26,25 +28,49 @@ class Resident extends Model
         'place_of_birth',
         'contact_number',
         'registered_voter',
-        'block',
-        'lot',
-        'unit',
-        'street',
-        'subdivision',
+
         'house_ownership',
         'relationship_to_head',
         'residence_since',
         'educational_attainment',
+        'out_of_school',
         'employment_status',
         'religion',
         'occupation',
-        'emergency_contact_name',
-        'emergency_contact_number',
+        'is_ofw',
+        'ofw_country',
+        'is_pwd',
+        'is_indigenous',
+        'indigenous_group',
+        'is_solo_parent',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Resident $resident) {
+
+            if (empty($resident->resident_id)) {
+
+                $lastId = static::query()
+                    ->whereNotNull('resident_id')
+                    ->orderByDesc('id')
+                    ->value('resident_id');
+
+                $nextNumber = 1;
+
+                if ($lastId && preg_match('/(\d+)$/', $lastId, $matches)) {
+                    $nextNumber = ((int) $matches[1]) + 1;
+                }
+
+                $resident->resident_id =
+                    'RES-' . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+            }
+        });
+    }
 
     public function getFullNameAttribute()
     {
@@ -63,21 +89,10 @@ class Resident extends Model
         return $fullName;
     }
 
-    protected function address(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                return collect([
-                    $this->block !== null ? 'Block ' . $this->block : null,
-                    $this->lot !== null ? 'Lot ' . $this->lot : null,
-                    $this->street,
-                    $this->subdivision,
-                ])
-                    ->filter(fn ($value) => filled($value))
-                    ->implode(', ');
-            }
-        );
-    }    
+    public function household(): BelongsTo 
+    { 
+        return $this->belongsTo(Household::class); 
+    }
 
     public function immunizations()
     {
@@ -92,5 +107,10 @@ class Resident extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class);
+    }
+
+    public function assistanceRequests(): HasMany
+    {
+        return $this->hasMany(AssistanceRequest::class);
     }
 }

@@ -4,7 +4,6 @@
             :items="[
                 [
                     'label' => 'Residents',
-                    'url' => route('residents.index'),
                 ],
             ]"
         />
@@ -21,7 +20,7 @@
             </div>
 
             <a
-                href="{{ route('residents.create') }}"
+                href="#"
                 class="inline-flex items-center gap-2
                        rounded-lg
                        border border-indigo-700

@@ -9,7 +9,7 @@
             :items="[
                 [
                     'label' => 'Residents',
-                    'url' => route('residents.index'),
+                    'url' => route('admin.residents.index'),
                 ],
                 [
                     'label' => $resident->resident_id,
@@ -43,7 +43,7 @@
                 </div>
 
                 <a
-                    href="{{ route('residents.edit', $resident) }}"
+                    href="{{ route('admin.residents.edit', $resident) }}"
                     class="px-4 py-2 bg-gray-200 rounded-lg">
                     EDIT
                 </a>
@@ -86,8 +86,6 @@
                         <div><p class="text-sm text-gray-500">Citizenship</p><p class="font-medium">{{ $display($resident->citizenship) }}</p></div>
                         <div><p class="text-sm text-gray-500">Place of Birth</p><p class="font-medium">{{ $display($resident->place_of_birth) }}</p></div>
                         <div><p class="text-sm text-gray-500">Contact Number</p><p class="font-medium">{{ $display($resident->contact_number) }}</p></div>
-                        <div><p class="text-sm text-gray-500">Emergency Contact</p><p class="font-medium">{{ $display($resident->emergency_contact_name) }}</p></div>
-                        <div><p class="text-sm text-gray-500">Emergency Contact Number</p><p class="font-medium">{{ $display($resident->emergency_contact_number) }}</p></div>
                         <div><p class="text-sm text-gray-500">Registered Voter</p><p class="font-medium">{{ $display($resident->registered_voter) }}</p></div>
                     </div>
                 </section>
@@ -98,11 +96,12 @@
                     </h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div><p class="text-sm text-gray-500">Block</p><p class="font-medium">{{ $display($resident->block) }}</p></div>
-                        <div><p class="text-sm text-gray-500">Lot</p><p class="font-medium">{{ $display($resident->lot) }}</p></div>
-                        <div><p class="text-sm text-gray-500">Unit</p><p class="font-medium">{{ $display($resident->unit) }}</p></div>
-                        <div><p class="text-sm text-gray-500">Street</p><p class="font-medium">{{ $display($resident->street) }}</p></div>
-                        <div><p class="text-sm text-gray-500">Subdivision</p><p class="font-medium">{{ $display($resident->subdivision) }}</p></div>
+                        <div><p class="text-sm text-gray-500">Household ID</p><p class="font-medium">{{ $display($resident->household?->household_id) }}</p></div>
+                        <div><p class="text-sm text-gray-500">Block</p><p class="font-medium">{{ $display($resident->household?->block) }}</p></div>
+                        <div><p class="text-sm text-gray-500">Lot</p><p class="font-medium">{{ $display($resident->household?->lot) }}</p></div>
+                        <div><p class="text-sm text-gray-500">Unit</p><p class="font-medium">{{ $display($resident->household?->unit) }}</p></div>
+                        <div><p class="text-sm text-gray-500">Street</p><p class="font-medium">{{ $display($resident->household?->street) }}</p></div>
+                        <div><p class="text-sm text-gray-500">Subdivision</p><p class="font-medium">{{ $display($resident->household?->subdivision) }}</p></div>
                         <div><p class="text-sm text-gray-500">House Ownership</p><p class="font-medium">{{ $display($resident->house_ownership) }}</p></div>
                         <div><p class="text-sm text-gray-500">Relationship to Head</p><p class="font-medium">{{ $display($resident->relationship_to_head) }}</p></div>
                         <div><p class="text-sm text-gray-500">Residence Since</p><p class="font-medium">{{ $display($resident->residence_since) }}</p></div>

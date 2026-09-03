@@ -6,6 +6,8 @@ namespace App\Models;
 use App\Models\AccountVerification;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -63,5 +65,15 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class, 'created_by');
+    }
+
+    public function assistanceRequests(): HasMany
+    {
+        return $this->hasMany(AssistanceRequest::class);
+    }
+
+    public function resident(): BelongsTo
+    {
+        return $this->belongsTo(Resident::class, 'resident_id');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Household;
 use App\Models\Resident;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -96,7 +97,13 @@ new class extends Component
                 }
 
                 $data = array_combine($headers, $row);
+                $householdReference = trim((string) ($data['Household ID'] ?? ''));
+                $householdId = ctype_digit($householdReference)
+                    ? (int) $householdReference
+                    : Household::where('household_id', $householdReference)->value('id');
+
                 $resident = [
+                    'household_id' => $householdId,
                     'first_name' => trim((string) ($data['First Name'] ?? '')),
                     'middle_name' => trim((string) ($data['Middle Name (Optional)'] ?? '')) ?: null,
                     'last_name' => trim((string) ($data['Last Name'] ?? '')),
@@ -108,11 +115,6 @@ new class extends Component
                     'place_of_birth' => trim((string) ($data['Place of Birth'] ?? '')),
                     'contact_number' => trim((string) ($data['Contact Number'] ?? '')) ?: null,
                     'registered_voter' => trim((string) ($data['Registered Voter?'] ?? '')),
-                    'block' => trim((string) ($data['Block (Address)'] ?? '')),
-                    'lot' => trim((string) ($data['Lot (Address)'] ?? '')),
-                    'unit' => trim((string) ($data['Unit (Address)'] ?? '')) ?: null,
-                    'street' => trim((string) ($data['Street (Address)'] ?? '')),
-                    'subdivision' => trim((string) ($data['Subdivision/Village (Address)'] ?? '')),
                     'house_ownership' => trim((string) ($data['House Ownership'] ?? '')),
                     'relationship_to_head' => trim((string) ($data['Your relationship to the Head of the Family'] ?? '')),
                     'residence_since' => trim((string) ($data['Residence Since'] ?? '')),
@@ -120,27 +122,21 @@ new class extends Component
                     'employment_status' => trim((string) ($data['Employment Status'] ?? '')),
                     'religion' => trim((string) ($data['Religion'] ?? '')) ?: null,
                     'occupation' => trim((string) ($data['Occupation'] ?? '')) ?: null,
-                    'emergency_contact_name' => trim((string) ($data['Emergency Contact Name'] ?? '')) ?: null,
-                    'emergency_contact_number' => trim((string) ($data['Emergency Contact Number'] ?? '')) ?: null,
                 ];
 
                 $validation = Validator::make($resident, [
+                    'household_id' => ['required', 'integer', 'exists:households,id'],
                     'first_name' => ['required', 'string', 'max:255'],
                     'middle_name' => ['nullable', 'string', 'max:255'],
                     'last_name' => ['required', 'string', 'max:255'],
                     'extension_name' => ['nullable', 'string', 'max:50'],
                     'birth_date' => ['required', 'date'],
-                    'sex' => ['required', 'in:Male,Female,Other'],
+                    'sex' => ['required', 'in:Male,Female'],
                     'civil_status' => ['required', 'in:Single,Married,Widow/Widower,Divorced,Legally Separated'],
                     'citizenship' => ['required', 'string', 'max:100'],
                     'place_of_birth' => ['required', 'string', 'max:255'],
                     'contact_number' => ['nullable', 'string', 'max:20'],
                     'registered_voter' => ['required', 'in:Yes - within,Yes - elsewhere,No'],
-                    'block' => ['required', 'string', 'max:50'],
-                    'lot' => ['required', 'string', 'max:50'],
-                    'unit' => ['nullable', 'string', 'max:50'],
-                    'street' => ['required', 'string', 'max:255'],
-                    'subdivision' => ['required', 'string', 'max:255'],
                     'house_ownership' => ['required', 'string', 'max:100'],
                     'relationship_to_head' => ['required', 'string', 'max:100'],
                     'residence_since' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
@@ -148,8 +144,6 @@ new class extends Component
                     'employment_status' => ['required', 'string', 'max:100'],
                     'religion' => ['nullable', 'string', 'max:100'],
                     'occupation' => ['nullable', 'string', 'max:255'],
-                    'emergency_contact_name' => ['nullable', 'string', 'max:255'],
-                    'emergency_contact_number' => ['nullable', 'string', 'max:20'],
                 ]);
 
                 if ($validation->fails()) {
@@ -293,14 +287,6 @@ new class extends Component
                         </span>
                     </button>
                 @endif
-
-                <a
-                    href="{{ route('residents.create') }}"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                    + New Resident
-                </a>
-
             </div>        
 
             @error('csvFile')
@@ -379,7 +365,8 @@ new class extends Component
 
                         <td class="px-4 py-3">
                             <a
-                                href="{{ route('residents.show', $resident) }}"
+                                href="{{ route('admin.residents.show', $resident) }}"
+                                target="_blank"
                                 class="text-blue-600 hover:underline">
                                 View
                             </a>

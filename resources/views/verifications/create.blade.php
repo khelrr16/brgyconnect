@@ -292,7 +292,6 @@
 
                             </div>
 
-
                             {{-- Birthday --}}
 
                             <div class="sm:col-span-2">
@@ -463,31 +462,52 @@
                                         --Select--
                                     </option>
 
-                                    <option value="Conpil I Village">
+                                    <option 
+                                        value="Conpil I Village" 
+                                        {{ old('subdivision') === 'Conpil I Village' ? 'selected' : '' }}
+                                    >
                                         Conpil I Village
                                     </option>
 
-                                    <option value="Conpil III Executive">
+                                    <option 
+                                        value="Conpil III Executive"
+                                        {{ old('subdivision') === 'Conpil III Executive' ? 'selected' : '' }}
+                                    >
                                         Conpil III Executive
                                     </option>
 
-                                    <option value="Console 1 Village">
+                                    <option 
+                                        value="Console 1 Village"
+                                        {{ old('subdivision') === 'Console 1 Village' ? 'selected' : '' }}
+                                    >
                                         Console 1 Village
                                     </option>
 
-                                    <option value="Greatland Village">
+                                    <option 
+                                        value="Greatland Village"
+                                        {{ old('subdivision') === 'Greatland Village' ? 'selected' : '' }}
+                                    >
                                         Greatland Village
                                     </option>
 
-                                    <option value="Guevara Subdivision">
+                                    <option 
+                                        value="Guevara Subdivision"
+                                        {{ old('subdivision') === 'Guevara Subdivision' ? 'selected' : '' }}
+                                    >
                                         Guevara Subdivision
                                     </option>
 
-                                    <option value="Pacita 2A">
+                                    <option 
+                                        value="Pacita 2A"
+                                        {{ old('subdivision') === 'Pacita 2A' ? 'selected' : '' }}
+                                    >
                                         Pacita 2A
                                     </option>
 
-                                    <option value="Pacita 2B">
+                                    <option 
+                                        value="Pacita 2B"
+                                        {{ old('subdivision') === 'Pacita 2B' ? 'selected' : '' }}
+                                    >
                                         Pacita 2B
                                     </option>
 

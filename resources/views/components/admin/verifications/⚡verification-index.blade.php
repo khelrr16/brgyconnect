@@ -31,9 +31,9 @@ new class extends Component {
 
         {{-- Page description --}}
         <div>
-            <h3 class="text-lg font-bold text-gray-900">
+            <h2 class="text-2xl font-bold text-gray-900">
                 Account Verifications
-            </h3>
+            </h2>
 
             <p class="mt-1 text-sm text-gray-500">
                 Review and verify registered user accounts.

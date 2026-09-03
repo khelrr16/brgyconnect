@@ -4,7 +4,7 @@
         <div>
             <h2 class="font-semibold uppercase text-xl text-gray-800">
                 <a
-                    href="{{ route('residents.index') }}"
+                    href="{{ route('admin.residents.index') }}"
                     class="inline-flex items-center justify-center rounded-lg bg-gray-200 p-2"
                 >
                     <i class="fa-solid fa-arrow-left"></i>

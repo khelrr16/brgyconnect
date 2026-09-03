@@ -103,13 +103,30 @@
                     </x-admin-nav-link>
                 @endrole
 
+                {{-- Household --}}
+                <x-admin-nav-link
+                    :href="route('admin.households.index')"
+                    :active="request()->routeIs('admin.households.*')"
+                >
+                    <i class="fa-solid fa-house w-5 text-center"></i>
+                    <span>Households</span>
+                </x-admin-nav-link>
+
                 {{-- Residents --}}
                 <x-admin-nav-link
-                    :href="route('residents.index')"
-                    :active="request()->routeIs('residents.*')"
+                    :href="route('admin.residents.index')"
+                    :active="request()->routeIs('admin.residents.*')"
                 >
                     <i class="fa-solid fa-users w-5 text-center"></i>
                     <span>Residents</span>
+                </x-admin-nav-link>
+
+                <x-admin-nav-link
+                    :href="route('admin.assistance-requests.index')"
+                    :active="request()->routeIs('admin.assistance-requests.*')"
+                >
+                    <i class="fa-solid fa-hands-helping w-5 text-center"></i>
+                    <span>Assistance Requests</span>
                 </x-admin-nav-link>
 
                 {{-- Posts --}}

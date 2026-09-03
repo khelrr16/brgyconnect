@@ -24,7 +24,21 @@
                                 Status
                             </x-nav-link>
                         </div>
+                    @else
+                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <x-nav-link :href="route('certificate.requests.create')" :active="request()->routeIs('certificate.requests.create')">
+                                Certificates
+                            </x-nav-link>
+                        </div>
+
+                        <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <x-nav-link :href="route('certificate.assistance.index')" :active="request()->routeIs('assistance.requests.index')">
+                                Assistance Requests
+                            </x-nav-link>
+                        </div>
                     @endif
+
+
                 @endauth
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('contacts')" :active="request()->routeIs('contacts')">

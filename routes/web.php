@@ -1,12 +1,18 @@
 <?php
 
 use App\Http\Controllers\Admin\AccountVerificationController;
+use App\Http\Controllers\Admin\AssistanceRequestController as AdminAssistanceRequestController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HouseholdController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\ResidentController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\AssistanceRequestController;
 use App\Http\Controllers\BlotterRecordController;
+use App\Http\Controllers\CertificateRequestController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ImmunizationController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ResidentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -22,7 +28,7 @@ Route::middleware(['auth', 'verified.user'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     
     Route::middleware('role:super-admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index']) ->name('dashboard');
 
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserManagementController::class, 'create'])->name('users.create');
@@ -37,7 +43,8 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/verifications/{verification}/approve', [AccountVerificationController::class, 'approve'])->name('verifications.approve');
         Route::patch('/verifications/{verification}/reject', [AccountVerificationController::class, 'reject'])->name('verifications.reject');
 
-        Route::prefix('posts')->name('posts.')->group(function () {
+        // Posts
+        Route::prefix('post')->name('posts.')->group(function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::get('/create', [PostController::class, 'create'])->name('create');
             Route::get('/{post}/edit', [PostController::class, 'edit'])->name('edit');
@@ -45,16 +52,50 @@ Route::middleware(['auth'])->group(function () {
             Route::patch('/{post}', [PostController::class, 'update'])->name('update');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
         });
+
+        // Households
+        Route::prefix('household')->name('households.')->group(function () {
+            Route::get('/', [HouseholdController::class, 'index'])->name('index');
+            Route::get('/create', [HouseholdController::class, 'create'])->name('create');
+            Route::get('/{household}', [HouseholdController::class, 'show'])->name('show');
+            Route::get('/{household}/edit', [HouseholdController::class, 'edit'])->name('edit');
+            Route::patch('/{household}', [HouseholdController::class, 'update'])->name('update');
+        });
+
+        // Residents
+        Route::prefix('resident')->name('residents.')->group(function () {
+            Route::get('/', [ResidentController::class, 'index'])->name('index');
+            Route::get('/{household}/create', [ResidentController::class, 'create'])->name('create');
+            Route::get('/{resident}', [ResidentController::class, 'show'])->name('show');
+            Route::get('/{resident}/edit', [ResidentController::class, 'edit'])->name('edit');
+            Route::patch('/{resident}', [ResidentController::class, 'update'])->name('update');
+        });
+
+        // Assistance Requests
+        Route::get( '/assistance-requests', [AdminAssistanceRequestController::class, 'index'] )->name('assistance-requests.index'); 
+        Route::get( '/assistance-requests/{assistanceRequest}', [AdminAssistanceRequestController::class, 'show'] )->name('assistance-requests.show'); 
+        Route::patch( '/assistance-requests/{assistanceRequest}/process', [AdminAssistanceRequestController::class, 'process'] )->name('assistance-requests.process'); 
+        Route::patch( '/assistance-requests/{assistanceRequest}/approve', [AdminAssistanceRequestController::class, 'approve'] )->name('assistance-requests.approve'); 
+        Route::patch( '/assistance-requests/{assistanceRequest}/reject', [AdminAssistanceRequestController::class, 'reject'] )->name('assistance-requests.reject');
+
+        Route::get( '/certificates/indigency/{assistanceRequest}/print', [AdminAssistanceRequestController::class, 'print'] )->name('certificates.indigency.print');
+
+        // Residents
+        Route::prefix('immunization')->name('immunizations.')->group(function () {
+            Route::get('/', [ImmunizationController::class, 'index'])->name('index');
+            Route::get('/create', [ImmunizationController::class, 'create'])->name('create');
+            Route::get('/{immunization}', [ImmunizationController::class, 'show'])->name('show');
+            Route::get('/{immunization}/edit', [ImmunizationController::class, 'edit'])->name('edit');
+            Route::patch('/{immunization}', [ImmunizationController::class, 'update'])->name('update');
+        });
     });
 
-    Route::prefix('residents')->name('residents.')->group(function () {
-        Route::get('/', [ResidentController::class, 'index'])->name('index');
-        Route::get('/create', [ResidentController::class, 'create'])->name('create');
-        Route::get('/{resident}', [ResidentController::class, 'show'])->name('show');
-        Route::get('/{resident}/edit', [ResidentController::class, 'edit'])->name('edit');
-        Route::patch('/{resident}', [ResidentController::class, 'update'])->name('update');
-    });
-
+    Route::get('/certificates/request', [ CertificateRequestController::class, 'create'])->name('certificate.requests.create'); 
+    Route::post('/certificates/request', [ CertificateRequestController::class, 'store'])->name('certificate.requests.store');
+    
+    Route::get('/certificates/assistance', [AssistanceRequestController::class, 'index'])->name('certificate.assistance.index');
+    Route::get('/certificates/assistance/request', [AssistanceRequestController::class, 'create'])->name('certificate.assistance.create');
+    Route::post('/certificates/assistance/request', [AssistanceRequestController::class, 'store'])->name('certificate.assistance.store');
    
 
     Route::middleware('role:super-admin|blotter-officer')->prefix('blotters')->name('blotters.')->group(function () {

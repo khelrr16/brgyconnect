@@ -27,10 +27,17 @@ new class extends Component {
         }
 
         return Resident::query()
+            ->with('household')
             ->where(fn ($q) => $q
                 ->whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$this->search}%"])
-                ->orWhere('street', 'like', "%{$this->search}%")
-                ->orWhere('subdivision', 'like', "%{$this->search}%")
+                ->orWhere('resident_id', 'like', "%{$this->search}%")
+                ->orWhereHas('household', fn ($household) => $household
+                    ->where('household_id', 'like', "%{$this->search}%")
+                    ->orWhere('block', 'like', "%{$this->search}%")
+                    ->orWhere('lot', 'like', "%{$this->search}%")
+                    ->orWhere('unit', 'like', "%{$this->search}%")
+                    ->orWhere('street', 'like', "%{$this->search}%")
+                    ->orWhere('subdivision', 'like', "%{$this->search}%"))
             )
             ->whereDoesntHave('user')
             ->limit(10)
@@ -50,11 +57,24 @@ new class extends Component {
         ]);
 
         DB::transaction(function () {
-            $this->verification->user->update(['resident_id' => $this->selectedResidentId]);
+            $user = $this->verification->user()
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $resident = Resident::query()->findOrFail($this->selectedResidentId);
+
+            $user->resident_id = $resident->id;
+            $user->saveOrFail();
+
+            $user->refresh();
+
+            if ((int) $user->resident_id !== (int) $resident->id) {
+                throw new \RuntimeException('The resident could not be linked to the user.');
+            }
 
             $this->verification->update([
                 'status' => 'approved',
-                'resident_id' => $this->selectedResidentId,
+                'resident_id' => $resident->id,
             ]);
         });
 
@@ -544,7 +564,7 @@ new class extends Component {
                                                 </p>
 
 
-                                                @if($resident->address)
+                                                @if($resident->household?->full_address)
 
                                                     <p
                                                         class="mt-0.5
@@ -556,7 +576,7 @@ new class extends Component {
                                                             class="fa-solid fa-location-dot mr-1"
                                                         ></i>
 
-                                                        {{ $resident->address }}
+                                                        {{ $resident->household->full_address }}
                                                     </p>
 
                                                 @endif

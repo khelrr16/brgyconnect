@@ -60,15 +60,15 @@ class DatabaseSeeder extends Seeder
         $memberRole->syncPermissions([]);
 
         Resident::factory(50)
-        ->sequence(fn ($sequence) => [
-            'resident_id' => 'RES-' . str_pad(
-                $sequence->index + 1,
-                6,
-                '0',
-                STR_PAD_LEFT
-            ),
-        ])
-        ->create();
+            ->sequence(fn ($sequence) => [
+                'resident_id' => 'RES-' . str_pad(
+                    $sequence->index + 1,
+                    6,
+                    '0',
+                    STR_PAD_LEFT
+                ),
+            ])
+            ->create();
 
         User::factory()->create([
             'name' => 'Super Admin 1',

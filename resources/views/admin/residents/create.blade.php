@@ -3,8 +3,12 @@
         <x-breadcrumb
             :items="[
                 [
-                    'label' => 'Residents',
-                    'url' => route('residents.index'),
+                    'label' => 'Households',
+                    'url' => route('admin.households.index'),
+                ],
+                [
+                    'label' => $household->household_id,
+                    'url' => route('admin.households.show', $household->id),
                 ],
                 [
                     'label' => 'New Resident',
@@ -21,6 +25,6 @@
         </div>
     </x-slot>
 
-    <livewire:residents.resident-form />
+    <livewire:residents.resident-form :household="$household" />
 
 </x-app-layout>

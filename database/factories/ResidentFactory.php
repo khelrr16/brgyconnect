@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Household;
 use App\Models\Resident;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,6 +19,7 @@ class ResidentFactory extends Factory
     public function definition(): array
     {
         return [
+            'household_id' => Household::factory(),
             'resident_id' => $this->faker->unique()->numerify('RES-#####'),
             'first_name' => $this->faker->firstName(),
             'middle_name' => $this->faker->optional(0.7)->lastName(), 
@@ -31,11 +33,6 @@ class ResidentFactory extends Factory
             'contact_number' => $this->faker->phoneNumber(),
             'registered_voter' => $this->faker->randomElement(['Yes - Within Barangay', 'Yes - Elsewhere', 'No']),
 
-            'block' => $this->faker->numberBetween(1, 20),
-            'lot' => $this->faker->numberBetween(1, 100),
-            'unit' => $this->faker->optional(0.5)->buildingNumber(),
-            'street' => $this->faker->streetName(),
-            'subdivision' => $this->faker->randomElement(['Conpil I Village', 'Conpil III Executive', 'Console 1 Village', 'Greatland Village', 'Guevara Subdivision', 'Pacita 2A', 'Pacita 2B']),
             'house_ownership' => $this->faker->randomElement(['Owned', 'Rented', 'Living with relatives', 'Other']),
             'relationship_to_head' => $this->faker->randomElement(['Head of Household', 'Spouse', 'Child', 'Parent', 'Sibling', 'Other']),
             'residence_since' => $this->faker->numberBetween(1990, date('Y')),
@@ -44,9 +41,6 @@ class ResidentFactory extends Factory
             'employment_status' => $this->faker->randomElement(['Employed', 'Self-Employed', 'Unemployed', 'Student', 'Retired', 'Other']),
             'religion' => $this->faker->randomElement(['Roman Catholic', 'Christianity', 'Islam', 'Hinduism', 'Buddhism', 'Judaism', 'Other']),
             'occupation' => $this->faker->jobTitle(),
-
-            'emergency_contact_name' => $this->faker->name(),
-            'emergency_contact_number' => $this->faker->phoneNumber(),
         ];
     }
 }
