@@ -95,7 +95,7 @@
             {{-- Republic Logo --}}
 
             <img
-                src="{{ asset('images/republic_logo.png') }}"
+                src="{{ asset('images/brgy_logo.png') }}"
                 alt="Republic of the Philippines Seal"
                 class="w-20 h-20 object-contain"
             >
@@ -109,28 +109,28 @@
                           text-[11px] text-gray-600
                           font-sans font-semibold">
 
-                    Republic of the Philippines
+                    REPUBLIKA NG PILIPINAS
 
                 </p>
 
 
                 <p class="text-[11px] text-gray-600 font-sans">
 
-                    Province of Laguna, City of San Pedro
+                    LALAWIGAN NG LAGUNA
 
                 </p>
 
 
                 <h1 class="text-xl font-bold text-gray-900 mt-1">
 
-                    Barangay San Lorenzo Ruiz
+                    LUNGSOD NG SAN PEDRO
 
                 </h1>
 
 
                 <p class="text-[11px] text-gray-500 font-sans">
 
-                    Office of the Punong Barangay
+                    PAMAHALAANG BARANGAY NG SAN LORENZO RUIZ
 
                 </p>
 
@@ -140,7 +140,7 @@
             {{-- Barangay Logo --}}
 
             <img
-                src="{{ asset('images/brgy_logo.png') }}"
+                src="{{ asset('images/city_logo.png') }}"
                 alt="Barangay Logo"
                 class="w-20 h-20 object-contain"
             >

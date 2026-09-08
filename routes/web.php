@@ -90,6 +90,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{immunization}/edit', [ImmunizationController::class, 'edit'])->name('edit');
             Route::patch('/{immunization}', [ImmunizationController::class, 'update'])->name('update');
         });
+
+        Route::prefix('blotters')->name('blotters.')->group(function () {
+            Route::view('/', 'blotters.index')->name('index');
+            Route::view('/create', 'blotters.create')->name('create');
+            Route::get('/{blotter}', [BlotterRecordController::class, 'show'])->name('show');
+            Route::get('/{blotter}/edit', [BlotterRecordController::class, 'edit'])->name('edit');
+            Route::get('/{blotter}/print', [BlotterRecordController::class, 'print'])->name('print');
+            Route::get('/{blotter}/hearing/{hearing}/print', [BlotterRecordController::class, 'printHearing'])->name('hearings.print');
+            Route::get('/{blotter}/notice', [BlotterRecordController::class, 'notice'])->name('notice');
+            Route::patch('/{blotter}/status',[BlotterRecordController::class, 'updateStatus'])->name('status.update');
+        });
     });
 
     Route::get('/certificates/request', [ CertificateRequestController::class, 'create'])->name('certificate.requests.create'); 
@@ -98,18 +109,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/certificates/assistance', [AssistanceRequestController::class, 'index'])->name('certificate.assistance.index');
     Route::get('/certificates/assistance/request', [AssistanceRequestController::class, 'create'])->name('certificate.assistance.create');
     Route::post('/certificates/assistance/request', [AssistanceRequestController::class, 'store'])->name('certificate.assistance.store');
-   
-
-    Route::middleware(['role:super-admin|admin', 'permission:blotter.view'])->prefix('blotters')->name('blotters.')->group(function () {
-        Route::view('/', 'blotters.index')->name('index');
-        Route::view('/create', 'blotters.create')->name('create');
-        Route::get('/{blotter}', [BlotterRecordController::class, 'show'])->name('show');
-        Route::get('/{blotter}/edit', [BlotterRecordController::class, 'edit'])->name('edit');
-        Route::get('/{blotter}/print', [BlotterRecordController::class, 'print'])->name('print');
-        Route::get('/{blotter}/hearing/{hearing}/print', [BlotterRecordController::class, 'printHearing'])->name('hearings.print');
-        Route::get('/{blotter}/notice', [BlotterRecordController::class, 'notice'])->name('notice');
-        Route::patch('/{blotter}/status',[BlotterRecordController::class, 'updateStatus'])->name('status.update');
-    });
 });
 
 Route::middleware('auth')->group(function () {

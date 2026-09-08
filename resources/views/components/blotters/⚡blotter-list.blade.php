@@ -237,7 +237,7 @@ new class extends Component
                 @forelse($upcomingHearings as $hearing)
 
                     <a
-                        href="{{ route('blotters.show', $hearing->blotterRecord) }}"
+                        href="{{ route('admin.blotters.show', $hearing->blotterRecord) }}"
                         class="flex flex-row items-center justify-between gap-3 border-b border-gray-100 py-4 last:border-0 hover:bg-gray-50"
                     >
 
@@ -387,7 +387,7 @@ new class extends Component
                             <div class="flex flex-wrap items-center gap-2">
 
                                 <a
-                                    href="{{ route('blotters.show', $blotter) }}"
+                                    href="{{ route('admin.blotters.show', $blotter) }}"
                                     class="text-lg font-bold text-gray-900 hover:text-blue-600"
                                 >
                                     {{ $blotter->blotter_number }}
@@ -416,7 +416,7 @@ new class extends Component
 
                     {{-- View Button --}}
                     <a
-                        href="{{ route('blotters.show', $blotter) }}"
+                        href="{{ route('admin.blotters.show', $blotter) }}"
                         class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                     >
                         <i class="fa-solid fa-eye"></i>

@@ -9,10 +9,6 @@
                 <p class="mt-1 text-sm text-gray-500">Track infant vaccines, nutrition, and completion status.</p>
             </div>
             <div class="flex flex-wrap gap-2">
-                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-                    <i class="fa-solid fa-gauge-high"></i>
-                    Dashboard
-                </a>
                 <a href="{{ route('admin.immunizations.create') }}" class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700">
                     <i class="fa-solid fa-plus"></i>
                     New record

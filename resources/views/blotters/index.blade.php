@@ -21,7 +21,7 @@
             </div>
 
             <a
-                href="{{ route('blotters.create') }}"
+                href="{{ route('admin.blotters.create') }}"
                 class="inline-flex items-center gap-2
                     rounded-lg
                     border border-blue-700

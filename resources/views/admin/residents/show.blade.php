@@ -95,6 +95,8 @@
                         Residency Information
                     </h2>
 
+                    <livewire:residents.household-assignment :resident="$resident" />
+
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div><p class="text-sm text-gray-500">Household ID</p><p class="font-medium">{{ $display($resident->household?->household_id) }}</p></div>
                         <div><p class="text-sm text-gray-500">Block</p><p class="font-medium">{{ $display($resident->household?->block) }}</p></div>

@@ -101,7 +101,10 @@ class Resident extends Model
 
     public function blotterRecords()
     {
-        return $this->hasMany(BlotterRecord::class);
+        return $this->hasMany(BlotterRecord::class)
+            ->orWhereHas('parties', function ($query) {
+                $query->where('resident_id', $this->getKey());
+            });
     }
 
     public function user(): HasOne

@@ -149,8 +149,8 @@
                 {{-- Blotter --}}
                 @can('blotter.view')
                     <x-admin-nav-link
-                        :href="route('blotters.index')"
-                        :active="request()->routeIs('blotters.*')"
+                        :href="route('admin.blotters.index')"
+                        :active="request()->routeIs('admin.blotters.*')"
                     >
                         <i class="fa-solid fa-file-lines w-5 text-center"></i>
                         <span>Blotter Records</span>

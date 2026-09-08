@@ -20,7 +20,7 @@
             </div>
 
             <a
-                href="#"
+                href="{{ route('admin.households.create') }}"
                 class="inline-flex items-center gap-2
                        rounded-lg
                        border border-indigo-700

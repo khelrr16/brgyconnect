@@ -96,7 +96,7 @@
             @endif
         </div>
     
-        <div class="min-h-screen">
+        <div class="min-h-screen bg-gray-50">
 
             @role('super-admin|admin')
                 @include('layouts.sidebar')
